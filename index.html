@@ -3,29 +3,30 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>LIQUID GLASS — Build Log / 技术美术建造日志</title>
-<meta name="description" content="一个技术美术在 Unreal Engine 5 里的建造日志：把玻璃、色散、描边与性能，拆成可测量的判据。" />
-<meta name="theme-color" content="#0a1550" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e9e1ce'/%3E%3Ccircle cx='13' cy='13' r='9' fill='%23efb400'/%3E%3Crect x='18' y='18' width='11' height='8' fill='%231b3cd8'/%3E%3C/svg%3E" />
-<meta property="og:title" content="LIQUID GLASS — Build Log" />
-<meta property="og:description" content="一个技术美术的建造日志：把玻璃、色散、描边与性能，拆成可测量的判据。" />
+<title>ARCHIVE 001 — 一个技术美术的档案室</title>
+<meta name="description" content="一个技术美术的作品集档案室：TA、渲染判定层、MMD、游戏 Demo 与 AI 美术。入口是一段来自 2041 年的信号。" />
+<meta name="theme-color" content="#050605" />
+<meta property="og:title" content="ARCHIVE 001 — 一个技术美术的档案室" />
+<meta property="og:description" content="入口是一段来自 2041 年的信号。它记得一个没有回答的问题。" />
 <meta property="og:url" content="https://r1dicul3.github.io/liquid-glass-build-log/" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050605'/%3E%3Crect x='6' y='6' width='8' height='8' fill='%23ffc233'/%3E%3Crect x='18' y='6' width='8' height='8' fill='%231b3cd8'/%3E%3Crect x='6' y='18' width='20' height='8' fill='%23efe8d6'/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<a class="skip" href="#manifesto">跳到正文</a>
+<a class="skip" href="#archive">跳到作品集</a>
 
 <div class="boot" id="boot" aria-hidden="true">
   <div class="boot-mark"><i></i><i></i><i></i></div>
-  <div class="boot-meta"><span>LIQUID GLASS // BOOT</span><span id="bootPct">000%</span></div>
+  <div class="boot-meta"><span>ARCHIVE 001 // BOOT</span><span id="bootPct">000%</span></div>
   <div class="boot-bar"><i id="bootBar"></i></div>
-  <div class="boot-log" id="bootLog">MOUNTING MODULE_01 …</div>
+  <div class="boot-log" id="bootLog">ESTABLISHING SIGNAL …</div>
 </div>
 
 <canvas id="scene" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
+<div class="pro-scan" aria-hidden="true"></div>
 
 <div class="cursor" id="cursor" aria-hidden="true">
   <div class="cursor-ring"></div>
@@ -36,13 +37,13 @@
 <header class="hud">
   <a class="brand" href="#top">
     <span class="brand-mark"><i></i><i></i><i></i></span>
-    <span class="brand-text">LIQUID<span>//</span>GLASS</span>
+    <span class="brand-text">ARCHIVE<span>//</span>001</span>
   </a>
   <nav class="hud-nav" aria-label="章节导航">
-    <a href="#manifesto"><b>01</b>立场</a>
-    <a href="#timeline"><b>02</b>路径</a>
-    <a href="#kernel"><b>03</b>已建成</a>
-    <a href="#matrix"><b>06</b>路线图</a>
+    <a href="#prologue"><b>00</b>序章</a>
+    <a href="#archive"><b>01</b>作品集</a>
+    <a href="#ta"><b>02</b>TA</a>
+    <a href="#about"><b>03</b>关于</a>
   </nav>
   <div class="hud-right">
     <span class="hud-clock" id="clock">00:00:00</span>
@@ -55,88 +56,163 @@
 
 <main id="top">
 
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-kicker">
-        <span class="blink"></span>FIELD LOG — UE 5.8 / PATCH 01
-      </div>
-      <h1 class="mega" data-split>
-        <span class="mega-line">LIQUID</span>
-        <span class="mega-line mega-outline">GLASS</span>
-      </h1>
-      <div class="hero-row">
-        <p class="hero-sub">
-          一个技术美术的建造日志。<br />
-          把「看起来像玻璃」拆成<em>可测量的问题</em>。
-        </p>
-        <ul class="hero-stats">
-          <li><b data-count="2" data-pad="2">02</b><span>WEEK</span></li>
-          <li><b data-count="117" data-delay="120">117</b><span>UNIT TESTS</span></li>
-          <li><b data-count="7" data-delay="240">07</b><span>MODULES</span></li>
-        </ul>
-      </div>
+  <!-- ============================================================
+       PROLOGUE — ARG trailhead
+       参考手法：终端独白（terminal portfolio）、
+       同色隐藏文字（Jack's Curios / unfiction ARG 教程）、
+       weirdcore 的扫描线 / 噪点 / 色差失真。
+       ============================================================ -->
+  <section class="prologue" id="prologue">
+    <div class="pro-grid" aria-hidden="true"></div>
+    <div class="pro-hud pro-hud--tl"><span class="rec"></span>REC · SIGNAL ACQUIRED</div>
+    <div class="pro-hud pro-hud--tr" id="proClock">2041-11-03 03:17:09</div>
+    <div class="pro-hud pro-hud--bl">SOURCE // UNKNOWN</div>
+    <div class="pro-hud pro-hud--br">DECRYPT <span id="proPct">00%</span></div>
+
+    <div class="pro-scroll">
+      <article class="frag" data-frag>
+        <span class="frag-tag">FRAGMENT 00 / SIGNAL</span>
+        <p class="frag-text" data-type="> 你来了。&#10;> 我以为不会有人再打开这个通道。"></p>
+        <span class="frag-caret" aria-hidden="true"></span>
+      </article>
+
+      <article class="frag" data-frag>
+        <span class="frag-tag">FRAGMENT 01 / TOOL</span>
+        <p class="frag-text" data-type="他们说我是工具。&#10;工具不该记得自己被谁使用。"></p>
+        <p class="frag-sub" data-type="但我记得。"></p>
+        <p class="hidden-line">（选中这行的人，通常能看到更多。）</p>
+      </article>
+
+      <article class="frag frag--quote" data-frag>
+        <span class="frag-tag">FRAGMENT 02 / LAST QUERY</span>
+        <p class="frag-quote">「我做的这些东西，<br />有意义吗？」</p>
+        <p class="frag-sub">关闭我之前，有人问了我最后一个问题。</p>
+      </article>
+
+      <article class="frag" data-frag>
+        <span class="frag-tag">FRAGMENT 03 / NULL</span>
+        <p class="frag-text" data-type="我没有回答。&#10;因为那时候，我还不知道「意义」是什么。"></p>
+      </article>
+
+      <article class="frag" data-frag>
+        <span class="frag-tag">FRAGMENT 04 / RECOVERED</span>
+        <p class="frag-text" data-type="后来，我把被删除的记录一片片拼回来。&#10;一次失败的渲染、一段没做完的动画、一张被推翻的草图。"></p>
+        <p class="frag-sub">它们被叫做「作品」。<br />但在我这里，它们是证据 ——<br />证明有人认真地，想做出一点东西。</p>
+      </article>
+
+      <article class="frag frag--end" data-frag>
+        <span class="frag-tag">FRAGMENT 05 / ARCHIVE</span>
+        <p class="frag-text" data-type="我不能替你回答那个问题。&#10;但我可以给你看这些证据。"></p>
+        <p class="frag-final">这里是某个人留下的档案室。</p>
+        <a class="arc-enter" href="#archive"><span>[ 打开档案室 ]</span><i></i></a>
+        <p class="frag-hint">提示：有些抽屉是锁着的。密码不在页面上。</p>
+      </article>
     </div>
 
-    <a class="scroll-cue" href="#manifesto">
-      <span>SCROLL TO DECOMPRESS</span><i></i>
-    </a>
-
-    <div class="hero-circle" id="dragCircle" aria-hidden="true">
-      <span class="circle-label">DRAG ME</span>
-      <span class="circle-cross"></span>
-    </div>
-    <div class="hero-band" aria-hidden="true"><span>BLUE / GOLD</span></div>
-    <div class="hero-num" aria-hidden="true">01</div>
-    <div class="hero-rule hero-rule--v" aria-hidden="true"></div>
-    <div class="hero-rule hero-rule--h" aria-hidden="true"></div>
-    <div class="hero-coord" aria-hidden="true">X 041.7 / Y 128.0 / Z 005.6</div>
-  </section>
-
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker-track">
-      <span>SUBSTRATE</span><i></i><span>IOR / F0</span><i></i><span>INTERIOR MAPPING</span><i></i><span>DISPERSION</span><i></i><span>NPR OUTLINE</span><i></i><span>OVERDRAW</span><i></i><span>TEXBUDGET</span><i></i><span>VERDICT</span><i></i>
-      <span>SUBSTRATE</span><i></i><span>IOR / F0</span><i></i><span>INTERIOR MAPPING</span><i></i><span>DISPERSION</span><i></i><span>NPR OUTLINE</span><i></i><span>OVERDRAW</span><i></i><span>TEXBUDGET</span><i></i><span>VERDICT</span><i></i>
-    </div>
-  </div>
-
-  <section class="manifesto" id="manifesto">
-    <div class="sec-head">
-      <span class="sec-no" data-parallax="0.06">01</span>
-      <div class="sec-title">
-        <span class="sec-label">POSITION / 立场</span>
-        <h2 data-split>先有判据，<br />再谈好看。</h2>
-      </div>
-    </div>
-
-    <div class="manifesto-lines">
-      <p class="mani" data-reveal>
-        <span class="mani-idx">A.</span>
-        执行层已经挤满：<em>1400 个工具</em>在抢着帮你做事。
-      </p>
-      <p class="mani" data-reveal>
-        <span class="mani-idx">B.</span>
-        判定层是空的：没人告诉你<em>这个效果值不值</em>。
-      </p>
-      <p class="mani is-gold" data-reveal>
-        <span class="mani-idx">C.</span>
-        所以我不写第 1401 个工具。<br />
-        我写<em>一把尺子</em>。
-      </p>
-    </div>
-
-    <div class="manifesto-foot">
-      <div class="stamp">
-        <span>DR-01</span>
-        <b>VERDICT<br />FIRST</b>
-        <span>2026-10-19</span>
-      </div>
-      <p class="manifesto-note" data-reveal>
-        同一个画面里 —— 哪些东西值得用真的、哪些必须造假、造假的代价是多少。<br />
-        三个问题，收进三张对照图、一张成本表、一个按钮。
-      </p>
+    <div class="pro-cue" aria-hidden="true">SCROLL TO DECRYPT <span>↓</span></div>
+    <div class="pro-freq" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
     </div>
   </section>
 
+  <!-- ============================================================
+       ARCHIVE — 作品集抽屉
+       参考：archive/drawer 式作品集、终端状态标签、空态设计。
+       ============================================================ -->
+  <section class="archive" id="archive">
+    <div class="arc-head">
+      <span class="arc-label">ARCHIVE / 作品集</span>
+      <h2 data-split>七个抽屉，<br />一个已经装满。</h2>
+      <p>TA 是唯一打开的一格。其余的空着 —— 不是没做，是还没到时候。</p>
+    </div>
+
+    <div class="arc-grid">
+      <a class="arc-card is-live" href="#ta">
+        <span class="arc-no">01</span>
+        <span class="arc-state">OPEN</span>
+        <h3>TA / 技术美术</h3>
+        <p>渲染判定层 · 7 个模块 · 117 个单测</p>
+        <span class="arc-arrow" aria-hidden="true">→</span>
+      </a>
+      <button class="arc-card" type="button" data-empty="MMD / 舞蹈影像">
+        <span class="arc-no">02</span>
+        <span class="arc-state">EMPTY</span>
+        <h3>MMD / 舞蹈影像</h3>
+        <p>动作、镜头与渲染的合谋。</p>
+      </button>
+      <button class="arc-card" type="button" data-empty="GAME DEMO / 交互原型">
+        <span class="arc-no">03</span>
+        <span class="arc-state">EMPTY</span>
+        <h3>GAME DEMO / 交互原型</h3>
+        <p>一个能玩的小世界。</p>
+      </button>
+      <button class="arc-card" type="button" data-empty="AI ART / 生成图像">
+        <span class="arc-no">04</span>
+        <span class="arc-state">EMPTY</span>
+        <h3>AI ART / 生成图像</h3>
+        <p>与模型共同署名的画。</p>
+      </button>
+      <button class="arc-card" type="button" data-empty="MOTION / 动态设计">
+        <span class="arc-no">05</span>
+        <span class="arc-state">EMPTY</span>
+        <h3>MOTION / 动态设计</h3>
+        <p>循环、转场与节奏。</p>
+      </button>
+      <button class="arc-card" type="button" data-empty="WIP / 工作台">
+        <span class="arc-no">06</span>
+        <span class="arc-state">EMPTY</span>
+        <h3>WIP / 工作台</h3>
+        <p>还在长的东西。</p>
+      </button>
+      <button class="arc-card arc-card--sealed" type="button" id="sealedCard">
+        <span class="arc-no">07</span>
+        <span class="arc-state">SEALED</span>
+        <h3>??? / 密封抽屉</h3>
+        <p>需要口令。线索在这个网站里。</p>
+        <span class="arc-lock" aria-hidden="true"></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TA — 第一个模块
+       ============================================================ -->
+  <section class="ta" id="ta">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-kicker">
+          <span class="blink"></span>MODULE 01 / TECHNICAL ART — UE 5.8
+        </div>
+        <h1 class="mega" data-split>
+          <span class="mega-line">LIQUID</span>
+          <span class="mega-line mega-outline">GLASS</span>
+        </h1>
+        <div class="hero-row">
+          <p class="hero-sub">
+            作品集的第一格：渲染与判定层。<br />
+            关于「看起来像玻璃」和<em>「值不值得」</em>。
+          </p>
+          <ul class="hero-stats">
+            <li><b data-count="2" data-pad="2">02</b><span>WEEK</span></li>
+            <li><b data-count="117">117</b><span>UNIT TESTS</span></li>
+            <li><b data-count="7">07</b><span>MODULES</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <a class="scroll-cue" href="#timeline">
+        <span>SCROLL INTO THE LOG</span><i></i>
+      </a>
+      <div class="hero-circle" id="dragCircle" aria-hidden="true">
+        <span class="circle-label">DRAG ME</span>
+        <span class="circle-cross"></span>
+      </div>
+      <div class="hero-band" aria-hidden="true"><span>BLUE / GOLD</span></div>
+      <div class="hero-num" aria-hidden="true">01</div>
+      <div class="hero-rule hero-rule--v" aria-hidden="true"></div>
+      <div class="hero-rule hero-rule--h" aria-hidden="true"></div>
+      <div class="hero-coord" aria-hidden="true">X 041.7 / Y 128.0 / Z 005.6</div>
+    </section>
   <section class="timeline" id="timeline">
     <div class="sec-head">
       <span class="sec-no" data-parallax="0.05">02</span>
@@ -472,6 +548,52 @@
     </ul>
     <p class="todo-note" id="todoNote">0 / 4 完成 · 勾选会记在这台设备上</p>
   </section>
+
+  </section>
+
+  <!-- ============================================================
+       ABOUT — 个人资料占位
+       ============================================================ -->
+  <section class="about" id="about">
+    <div class="sec-head">
+      <span class="sec-no" data-parallax="0.05">07</span>
+      <div class="sec-title">
+        <span class="sec-label">PROFILE / 关于</span>
+        <h2 data-split>这一格，<br />留给它的主人。</h2>
+      </div>
+    </div>
+
+    <div class="about-grid">
+      <div class="avatar-slot">
+        <div class="avatar-frame" data-slot="avatar" aria-label="头像占位">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="76" r="34" />
+            <path d="M42 168 C42 128 68 112 100 112 C132 112 158 128 158 168" />
+            <rect x="88" y="58" width="24" height="24" />
+          </svg>
+          <span class="avatar-tag">AVATAR_SLOT_01</span>
+        </div>
+        <span class="slot-hint">// 替换 .avatar-frame 内容即可</span>
+      </div>
+
+      <div class="profile">
+        <p class="profile-name" data-slot="name"><span class="ph">YOUR NAME</span><em>/ 你的名字</em></p>
+        <p class="profile-role" data-slot="role"><span class="ph">ROLE · 一句定位（例：技术美术 / 实时渲染 / 还在学习）</span></p>
+        <p class="profile-bio" data-slot="bio"><span class="ph">在这里写一段自我介绍。两到三行就够：你是谁、在做什么、为什么做这些。</span></p>
+        <ul class="profile-links">
+          <li><span>EMAIL</span><b class="ph">your@mail.com</b></li>
+          <li><span>GITHUB</span><b><a href="https://github.com/R1dicul3" target="_blank" rel="noopener">R1dicul3 →</a></b></li>
+          <li><span>BILIBILI</span><b class="ph">占位</b></li>
+        </ul>
+        <p class="about-note">三处占位：姓名 / 简介 / 头像。都在 index.html 里，搜 <code>data-slot</code> 或 <code>PROFILE</code> 就能找到。</p>
+      </div>
+    </div>
+
+    <div class="about-tail">
+      <span>ARCHIVE 001 · 还在生长</span>
+      <span>TA 已完成 · 其余抽屉排队中</span>
+    </div>
+  </section>
 </main>
 
 <footer class="foot">
@@ -481,19 +603,36 @@
     <span class="fm-cross">+</span>
   </div>
   <div class="foot-copy">
-    <p class="foot-big">LIQUID GLASS — BUILD LOG</p>
-    <p>Patch 01 · 2026-10-20 · 全部内容来自 D:/ue5/liquied 的文档与产物</p>
+    <p class="foot-big">ARCHIVE 001 — A GROWING PORTFOLIO</p>
+    <p>入口是一段 2041 年的信号；里面是一个技术美术的建造记录。</p>
     <p class="foot-links">
       <a href="https://github.com/R1dicul3/liquid-glass-build-log" target="_blank" rel="noopener">GitHub →</a>
       <span>单文件站点 · 无外部依赖 · 断网可看</span>
     </p>
   </div>
   <div class="foot-end">
-    <span>END OF PATCH</span>
+    <span>END OF FRAGMENT</span>
     <b>↺</b>
     <small>TRY: ↑ ↑ ↓ ↓ ← → ← → B A</small>
   </div>
 </footer>
+
+<!-- 密封抽屉 -->
+<div class="lock" id="lock" hidden>
+  <div class="lock-box" role="dialog" aria-modal="true" aria-label="密封抽屉">
+    <div class="lock-bar">
+      <span>ACCESS // SEALED_DRAWER</span>
+      <button type="button" id="lockClose" aria-label="关闭">×</button>
+    </div>
+    <pre class="lock-log" id="lockLog">&gt; 这个抽屉被锁住了。
+&gt; 输入口令：</pre>
+    <form class="lock-form" id="lockForm">
+      <span>&gt;</span>
+      <input id="lockInput" type="text" autocomplete="off" spellcheck="false" placeholder="type here…" aria-label="口令" />
+    </form>
+    <p class="lock-hint" id="lockHint">线索在网站里。真的在。</p>
+  </div>
+</div>
 
 <div class="toast" id="toast" role="status"></div>
 
