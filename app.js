@@ -247,10 +247,10 @@
     parallaxY = -y * 0.012;
 
     if (hero && heroMega) {
-      const heroH = hero.offsetHeight;
-      const p = clamp(y / heroH, 0, 1);
+      const hr = hero.getBoundingClientRect();
+      const p = clamp(-hr.top / Math.max(1, hr.height), 0, 1.1);
       heroMega.style.transform = 'translate3d(0,' + (p * 70) + 'px,0)';
-      heroMega.style.opacity = String(1 - p * 1.1);
+      heroMega.style.opacity = String(clamp(1 - p * 1.15, 0, 1));
       if (heroNum) heroNum.style.transform = 'translate3d(0,' + (p * -40) + 'px,0)';
     }
 
@@ -607,8 +607,8 @@
       document.body.classList.remove('is-booting');
     } else {
       const logs = [
-        'MOUNTING MODULE_01 …', 'LOADING VERDICT CONTRACT …', 'SCANNING TEXTURE HEADS …',
-        'RENDERING REPORT …', 'READ-BACK SELF CHECK …', 'SYSTEM READY'
+        'ESTABLISHING SIGNAL …', 'DECRYPTING FRAGMENT 00 …', 'VERIFYING ARCHIVE INDEX …',
+        'SCANNING DRAWERS …', 'READ-BACK SELF CHECK …', 'ARCHIVE 001 READY'
       ];
       let p = 0;
       const t0 = performance.now();
@@ -644,5 +644,175 @@
   circle?.addEventListener('dblclick', () => {
     toast('第 1401 个工具？不。这里只有一把尺子。', 3200);
   });
+
+  /* ---------- prologue: typewriter ---------- */
+  const prologue = $('#prologue');
+  const proFrags = $$('.frag[data-frag]');
+  addEventListener('scroll', () => {
+    document.body.classList.toggle('pro-cue-off', scrollY > innerHeight * 1.1);
+  }, { passive: true });
+  const proPctEl = $('#proPct');
+  const proClock = $('#proClock');
+
+  function typeInto(el, text, speed) {
+    el.textContent = '';
+    const caret = document.createElement('span');
+    caret.className = 'caret';
+    el.appendChild(caret);
+    let i = 0;
+    return new Promise(resolve => {
+      (function tick() {
+        if (i >= text.length) {
+          setTimeout(() => caret.remove(), 800);
+          resolve();
+          return;
+        }
+        const ch = text[i++];
+        caret.before(document.createTextNode(ch));
+        const pause = ch === '\n' ? 260 : (ch === '。' || ch === '？' || ch === '，' ? speed * 3 : speed);
+        setTimeout(tick, pause);
+      })();
+    });
+  }
+
+  const typedFrags = new WeakSet();
+  async function typeFrag(frag) {
+    if (typedFrags.has(frag)) return;
+    typedFrags.add(frag);
+    const els = $$('[data-type]', frag);
+    for (const el of els) {
+      const text = el.dataset.type || '';
+      if (reduceMotion) { el.textContent = text; continue; }
+      await typeInto(el, text, 32);
+      await new Promise(r => setTimeout(r, 300));
+    }
+  }
+
+  if (proFrags.length) {
+    const fragIO = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        typeFrag(en.target);
+        fragIO.unobserve(en.target);
+      });
+    }, { threshold: 0.3 });
+    proFrags.forEach(f => fragIO.observe(f));
+  }
+
+  if (prologue) {
+    const proIO = new IntersectionObserver((entries) => {
+      entries.forEach(en => document.body.classList.toggle('pro-mode', en.isIntersecting));
+    }, { threshold: 0.05 });
+    proIO.observe(prologue);
+
+    const startSec = 3 * 3600 + 17 * 60 + 9;
+    const t0 = Date.now();
+    setInterval(() => {
+      if (!proClock) return;
+      const total = startSec + Math.floor((Date.now() - t0) / 1000);
+      const p = (n) => String(n).padStart(2, '0');
+      proClock.textContent = '2041-11-03 ' + p(Math.floor(total / 3600) % 24) + ':' + p(Math.floor(total / 60) % 60) + ':' + p(total % 60);
+    }, 1000);
+
+    addEventListener('scroll', () => {
+      if (!proPctEl) return;
+      const r = prologue.getBoundingClientRect();
+      const p = clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1);
+      proPctEl.textContent = String(Math.round(p * 100)).padStart(2, '0') + '%';
+    }, { passive: true });
+  }
+
+  /* ---------- archive: empty drawers ---------- */
+  $$('.arc-card[data-empty]').forEach(card => {
+    card.addEventListener('click', () => {
+      toast('「' + card.dataset.empty + '」这个抽屉还是空的。等我做完。', 3000);
+    });
+  });
+
+  /* ---------- sealed drawer ---------- */
+  const lock = $('#lock');
+  const lockBox = $('.lock-box');
+  const lockForm = $('#lockForm');
+  const lockInput = $('#lockInput');
+  const lockLog = $('#lockLog');
+  const lockHint = $('#lockHint');
+  const sealedCard = $('#sealedCard');
+  const ANSWERS = ['意义', 'meaning', 'the meaning'];
+  let unlocked = store.get('lg-unlocked', false);
+
+  function openLock() {
+    if (!lock) return;
+    lock.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => lockInput?.focus(), 80);
+  }
+  function closeLock() {
+    if (!lock) return;
+    lock.hidden = true;
+    document.body.style.overflow = '';
+  }
+  function markUnlocked() {
+    if (!sealedCard) return;
+    sealedCard.classList.remove('arc-card--sealed');
+    sealedCard.classList.add('is-live');
+    const state = $('.arc-state', sealedCard);
+    if (state) state.textContent = 'OPEN';
+    const h = $('h3', sealedCard);
+    if (h) h.textContent = 'EVIDENCE / 未命名';
+    const p = $('p', sealedCard);
+    if (p) p.textContent = '你问过那个问题。这里是我的回答。';
+    const lk = $('.arc-lock', sealedCard);
+    if (lk) lk.remove();
+  }
+  function showEvidence() {
+    if (!lock) return;
+    lock.hidden = false;
+    document.body.style.overflow = 'hidden';
+    if (lockForm) lockForm.style.display = 'none';
+    if (lockLog) lockLog.textContent = '> 口令正确。\n> 抽屉打开了。\n\nEVIDENCE 07 / FOR THE ONE WHO ASKED\n\n你问了和那个人一样的问题。\n我仍然没有答案。\n但我在试着回答 —— 用这一整个档案室。';
+    if (lockHint) lockHint.textContent = '解锁记录已保存。';
+    markUnlocked();
+  }
+  if (unlocked) markUnlocked();
+
+  sealedCard?.addEventListener('click', () => {
+    if (unlocked) showEvidence();
+    else openLock();
+  });
+  $('#lockClose')?.addEventListener('click', closeLock);
+  lock?.addEventListener('click', (e) => { if (e.target === lock) closeLock(); });
+  lockForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = (lockInput.value || '').trim().toLowerCase();
+    if (ANSWERS.includes(v)) {
+      unlocked = true;
+      store.set('lg-unlocked', true);
+      showEvidence();
+    } else {
+      lockBox?.classList.add('is-error');
+      if (lockLog) lockLog.textContent = '> 口令错误。\n> 再想想那个问题。';
+      if (lockInput) lockInput.value = '';
+      setTimeout(() => lockBox?.classList.remove('is-error'), 340);
+    }
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lock && !lock.hidden) closeLock();
+  });
+
+  /* ---------- nav highlight ---------- */
+  const navLinks = $$('.hud-nav a');
+  const secMap = navLinks.map(a => ({ a, el: document.querySelector(a.getAttribute('href')) })).filter(x => x.el);
+  if (secMap.length) {
+    const navIO = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        const item = secMap.find(x => x.el === en.target);
+        if (!item) return;
+        navLinks.forEach(a => a.classList.remove('is-active'));
+        if (en.isIntersecting) item.a.classList.add('is-active');
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    secMap.forEach(x => navIO.observe(x.el));
+  }
+
 
 })();
