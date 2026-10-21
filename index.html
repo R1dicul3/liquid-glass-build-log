@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="day">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>LIQUID GLASS — Build Log / 技术美术建造日志</title>
+<meta name="description" content="一个技术美术在 Unreal Engine 5 里的建造日志：把玻璃、色散、描边与性能，拆成可测量的判据。" />
+<meta name="theme-color" content="#0a1550" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e9e1ce'/%3E%3Ccircle cx='13' cy='13' r='9' fill='%23efb400'/%3E%3Crect x='18' y='18' width='11' height='8' fill='%231b3cd8'/%3E%3C/svg%3E" />
+<meta property="og:title" content="LIQUID GLASS — Build Log" />
+<meta property="og:description" content="一个技术美术的建造日志：把玻璃、色散、描边与性能，拆成可测量的判据。" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip" href="#manifesto">跳到正文</a>
+
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot-mark"><i></i><i></i><i></i></div>
+  <div class="boot-meta"><span>LIQUID GLASS // BOOT</span><span id="bootPct">000%</span></div>
+  <div class="boot-bar"><i id="bootBar"></i></div>
+  <div class="boot-log" id="bootLog">MOUNTING MODULE_01 …</div>
+</div>
+
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="cursor" id="cursor" aria-hidden="true">
+  <div class="cursor-ring"></div>
+  <div class="cursor-dot"></div>
+  <div class="cursor-readout" id="readout">000 / 000</div>
+</div>
+
+<header class="hud">
+  <a class="brand" href="#top">
+    <span class="brand-mark"><i></i><i></i><i></i></span>
+    <span class="brand-text">LIQUID<span>//</span>GLASS</span>
+  </a>
+  <nav class="hud-nav" aria-label="章节导航">
+    <a href="#manifesto"><b>01</b>立场</a>
+    <a href="#timeline"><b>02</b>路径</a>
+    <a href="#kernel"><b>03</b>已建成</a>
+    <a href="#matrix"><b>06</b>路线图</a>
+  </nav>
+  <div class="hud-right">
+    <span class="hud-clock" id="clock">00:00:00</span>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="切换日夜主题">
+      <span class="theme-btn-dot"></span><span id="themeLabel">NIGHT</span>
+    </button>
+  </div>
+  <div class="scroll-progress"><i id="scrollBar"></i></div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-kicker">
+        <span class="blink"></span>FIELD LOG — UE 5.8 / PATCH 01
+      </div>
+      <h1 class="mega" data-split>
+        <span class="mega-line">LIQUID</span>
+        <span class="mega-line mega-outline">GLASS</span>
+      </h1>
+      <div class="hero-row">
+        <p class="hero-sub">
+          一个技术美术的建造日志。<br />
+          把「看起来像玻璃」拆成<em>可测量的问题</em>。
+        </p>
+        <ul class="hero-stats">
+          <li><b data-count="2" data-pad="2">02</b><span>WEEK</span></li>
+          <li><b data-count="117" data-delay="120">117</b><span>UNIT TESTS</span></li>
+          <li><b data-count="7" data-delay="240">07</b><span>MODULES</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <a class="scroll-cue" href="#manifesto">
+      <span>SCROLL TO DECOMPRESS</span><i></i>
+    </a>
+
+    <div class="hero-circle" id="dragCircle" aria-hidden="true">
+      <span class="circle-label">DRAG ME</span>
+      <span class="circle-cross"></span>
+    </div>
+    <div class="hero-band" aria-hidden="true"><span>BLUE / GOLD</span></div>
+    <div class="hero-num" aria-hidden="true">01</div>
+    <div class="hero-rule hero-rule--v" aria-hidden="true"></div>
+    <div class="hero-rule hero-rule--h" aria-hidden="true"></div>
+    <div class="hero-coord" aria-hidden="true">X 041.7 / Y 128.0 / Z 005.6</div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>SUBSTRATE</span><i></i><span>IOR / F0</span><i></i><span>INTERIOR MAPPING</span><i></i><span>DISPERSION</span><i></i><span>NPR OUTLINE</span><i></i><span>OVERDRAW</span><i></i><span>TEXBUDGET</span><i></i><span>VERDICT</span><i></i>
+      <span>SUBSTRATE</span><i></i><span>IOR / F0</span><i></i><span>INTERIOR MAPPING</span><i></i><span>DISPERSION</span><i></i><span>NPR OUTLINE</span><i></i><span>OVERDRAW</span><i></i><span>TEXBUDGET</span><i></i><span>VERDICT</span><i></i>
+    </div>
+  </div>
+
+  <section class="manifesto" id="manifesto">
+    <div class="sec-head">
+      <span class="sec-no" data-parallax="0.06">01</span>
+      <div class="sec-title">
+        <span class="sec-label">POSITION / 立场</span>
+        <h2 data-split>先有判据，<br />再谈好看。</h2>
+      </div>
+    </div>
+
+    <div class="manifesto-lines">
+      <p class="mani" data-reveal>
+        <span class="mani-idx">A.</span>
+        执行层已经挤满：<em>1400 个工具</em>在抢着帮你做事。
+      </p>
+      <p class="mani" data-reveal>
+        <span class="mani-idx">B.</span>
+        判定层是空的：没人告诉你<em>这个效果值不值</em>。
+      </p>
+      <p class="mani is-gold" data-reveal>
+        <span class="mani-idx">C.</span>
+        所以我不写第 1401 个工具。<br />
+        我写<em>一把尺子</em>。
+      </p>
+    </div>
+
+    <div class="manifesto-foot">
+      <div class="stamp">
+        <span>DR-01</span>
+        <b>VERDICT<br />FIRST</b>
+        <span>2026-10-19</span>
+      </div>
+      <p class="manifesto-note" data-reveal>
+        同一个画面里 —— 哪些东西值得用真的、哪些必须造假、造假的代价是多少。<br />
+        三个问题，收进三张对照图、一张成本表、一个按钮。
+      </p>
+    </div>
+  </section>
+
+  <section class="timeline" id="timeline">
+    <div class="sec-head">
+      <span class="sec-no" data-parallax="0.05">02</span>
+      <div class="sec-title">
+        <span class="sec-label">TRAJECTORY / 路径</span>
+        <h2 data-split>两天，八次<br />改主意。</h2>
+      </div>
+    </div>
+
+    <div class="tl" id="tl">
+      <div class="tl-spine" aria-hidden="true"><i id="tlSpine"></i></div>
+      <ol class="tl-list">
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-19</span><span class="tl-tag">AUDIT</span></div>
+          <h3>盘点：六个材质，一件孤儿</h3>
+          <p>六个材质全是同一个 Substrate slab，F0 由 IOR 现算；描边只有一件 15,114 字节、零引用的素材。现状比预想的整齐，也比预想的空。</p>
+          <div class="tl-chip"><span>6 × slab</span><span>1 × orphan</span></div>
+        </li>
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-19</span><span class="tl-tag">CLEANUP</span></div>
+          <h3>清场：从 130 到 21</h3>
+          <p>把来路不明的脚本清到 21 个，174 项移进回收站而不是直接删。公开层与本地层写成硬约束：数字可以引用，图和名字不出现。</p>
+          <div class="tl-chip"><span>130 → 21</span><span>174 → _trash</span></div>
+        </li>
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-19</span><span class="tl-tag">POSITION</span></div>
+          <h3>换定位：不写工具，写尺子</h3>
+          <p>四个方向都成立，但照原样做就会变成教程复刻。执行层早被 1400 个 action 占满，判定层还是空的 —— 于是把作品集定位成「验收层」。</p>
+          <div class="tl-chip"><span>DR-01</span><span>Verdict first</span></div>
+        </li>
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-20</span><span class="tl-tag">SCOPE</span></div>
+          <h3>十八选七：三图一表一按钮</h3>
+          <p>18 个候选收敛成 7 项：视差假体积、厚壁色散、描边三路线、成本基准、贴图预算、体检面板、AI 审计。每一项都长在同一条叙事上。</p>
+          <div class="tl-chip"><span>18 → 7</span><span>3 图 / 1 表 / 1 按钮</span></div>
+        </li>
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-20</span><span class="tl-tag">PLAN</span></div>
+          <h3>重算工时：84 → 56 人日</h3>
+          <p>AI 的加速不均匀：写代码 3–5 倍，看画面只有 1.1–1.3 倍。省下的时间如果继续加效果，质量会掉 —— 所以瓶颈要从「写完」转到「判断」。</p>
+          <div class="tl-chip"><span>56 人日</span><span>≈ 12 周</span></div>
+        </li>
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-20</span><span class="tl-tag">BUILD</span></div>
+          <h3>打地基：七个模块，117 个测试</h3>
+          <p>没有显卡也能算的部分全部落地：判定、采样统计、机位契约、贴图预算、账本、参数契约、报告导出。一条命令跑完四道门。</p>
+          <div class="tl-chip"><span>7 modules</span><span>117 tests</span></div>
+        </li>
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-20</span><span class="tl-tag">MEASURE</span></div>
+          <h3>第一组真实数字</h3>
+          <p>39 张源图全部解析成功，一张都没跳过。按 BC7 + mip 估算共 178.0 MB；上限压到 1024 后，B 档省 42.7%，C 档省 71.9%。</p>
+          <div class="tl-chip"><span>178.0 MB</span><span>−42.7% / −71.9%</span></div>
+        </li>
+        <li class="tl-item is-done" data-reveal>
+          <div class="tl-meta"><span class="tl-date">2026-10-20</span><span class="tl-tag">DRAW</span></div>
+          <h3>画图纸：15 节点 / 17 条关系</h3>
+          <p>把整份方案画成一张可探索的架构图，学习顺序、内核现状、依赖关系都在上面。图不是装饰，是排期的依据。</p>
+          <div class="tl-chip"><span>15 nodes</span><span>17 edges</span></div>
+        </li>
+        <li class="tl-item is-next" data-reveal>
+          <div class="tl-meta"><span class="tl-date">NEXT</span><span class="tl-tag">WAITING</span></div>
+          <h3>等一次真实的采集</h3>
+          <p>帧时、指令数、对照截图 —— 这三样只能在有显卡和编辑器的机器上跑。我已经把格式契约和判定写好了，跑完就能亮灯。</p>
+          <div class="tl-chip"><span>shots.json</span><span>cost_runs.json</span></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="kernel" id="kernel">
+    <div class="kernel-grid-bg" aria-hidden="true"></div>
+    <div class="kernel-head">
+      <span class="sec-label">03 / BUILT</span>
+      <h2 data-split>已经跑起来的<br />七个判定模块。</h2>
+      <p class="kernel-sub">
+        没有显卡、没有编辑器、没有网络、没有 AI —— 同样的输入，换一台机器也要得出同一个红黄绿。
+      </p>
+    </div>
+
+    <div class="module-grid">
+      <article class="module" data-reveal data-tilt style="--i:0">
+        <header><span class="m-no">M01</span><span class="m-lamp is-green"></span></header>
+        <h3>verdict</h3>
+        <p>统一判定对象：<b>measured / threshold / unit</b>。缺一个就是 skip，空检查集一律红。</p>
+        <footer><code>lab/verdict.py</code><span class="m-val">12 checks</span></footer>
+      </article>
+      <article class="module" data-reveal data-tilt style="--i:1">
+        <header><span class="m-no">M02</span><span class="m-lamp is-green"></span></header>
+        <h3>cost</h3>
+        <p>采样中位数、极差与回归门槛：<b>5 次取样 / 20% 极差 / 10% 退化</b>，三条线都有边界测试。</p>
+        <footer><code>lab/cost.py</code><span class="m-val">±10%</span></footer>
+      </article>
+      <article class="module" data-reveal data-tilt style="--i:2">
+        <header><span class="m-no">M03</span><span class="m-lamp is-green"></span></header>
+        <h3>shot</h3>
+        <p>机位与参数快照：位置容差 <b>1e-3</b>，同 station 相机必须一致，不同 station 必须不同。</p>
+        <footer><code>lab/shot.py</code><span class="m-val">1e-3</span></footer>
+      </article>
+      <article class="module" data-reveal data-tilt style="--i:3">
+        <header><span class="m-no">M04</span><span class="m-lamp is-green"></span></header>
+        <h3>texbudget</h3>
+        <p>只读 PNG / JPEG / TGA 文件头取尺寸；读不出就进清单标黄，<b>不静默跳过</b>。</p>
+        <footer><code>lab/texbudget.py</code><span class="m-val">39 / 39</span></footer>
+      </article>
+      <article class="module" data-reveal data-tilt style="--i:4">
+        <header><span class="m-no">M05</span><span class="m-lamp is-green"></span></header>
+        <h3>ledger</h3>
+        <p>变更账本：<b>dry-run 默认</b>，写操作必须留批准人；只存规范化哈希，回放强制只读。</p>
+        <footer><code>lab/ledger.py</code><span class="m-val">JSONL</span></footer>
+      </article>
+      <article class="module" data-reveal data-tilt style="--i:5">
+        <header><span class="m-no">M06</span><span class="m-lamp is-green"></span></header>
+        <h3>contract</h3>
+        <p>参数契约体检：<b>tuning.json ↔ params.py</b>。改一个默认值，下一次验成立刻变红。</p>
+        <footer><code>lab/contract.py</code><span class="m-val">PASS</span></footer>
+      </article>
+      <article class="module module--wide" data-reveal data-tilt style="--i:6">
+        <header><span class="m-no">M07</span><span class="m-lamp is-green"></span></header>
+        <h3>report</h3>
+        <p>自包含 HTML / Markdown 导出；生成之后<b>读回来再数一遍</b> —— 导出成功不等于导出正确。</p>
+        <footer><code>lab/report.py</code><span class="m-val">4,683 bytes</span></footer>
+      </article>
+    </div>
+
+    <div class="terminal" id="terminal">
+      <div class="term-bar">
+        <span class="term-dots"><i></i><i></i><i></i></span>
+        <span class="term-title">verify_all.py — loop runner</span>
+        <button class="term-run" id="runBtn" type="button">RUN <span>↻</span></button>
+      </div>
+      <pre class="term-body" id="termBody" aria-live="polite"><span class="term-line is-in dim">$ python tools/verify_all.py</span></pre>
+      <div class="term-hint">点 RUN 跑一遍四道门。真实的验收器是纯标准库、断网也能跑。</div>
+    </div>
+  </section>
+
+  <section class="optics" id="optics">
+    <div class="optics-head">
+      <span class="sec-label">04 / OPTICS</span>
+      <h2 data-split>色散，<br />拖出来给眼睛看。</h2>
+      <p>真实厚玻璃的边缘有彩虹边。它来自不同波长的折射率不同 —— 一个数字讲不清，得拆开看。</p>
+    </div>
+
+    <div class="lab">
+      <div class="lab-stage" id="labStage">
+        <div class="lab-stage-grid" aria-hidden="true"></div>
+        <svg class="cup" id="cupSvg" viewBox="0 0 320 400" aria-label="玻璃杯色散示意图">
+          <defs>
+            <path id="cupBody" d="M72 62 C72 52 82 46 94 46 L226 46 C238 46 248 52 248 62 L235 330 C234 345 224 356 210 356 L110 356 C96 356 86 345 85 330 Z" />
+            <ellipse id="cupRim" cx="160" cy="56" rx="79" ry="15" />
+            <ellipse id="cupLiquid" cx="160" cy="104" rx="62" ry="10" />
+          </defs>
+          <g class="chan chan-r"><use href="#cupBody" /><use href="#cupRim" /><use href="#cupLiquid" /></g>
+          <g class="chan chan-g"><use href="#cupBody" /><use href="#cupRim" /><use href="#cupLiquid" /></g>
+          <g class="chan chan-b"><use href="#cupBody" /><use href="#cupRim" /><use href="#cupLiquid" /></g>
+          <g class="cup-ink">
+            <use href="#cupBody" />
+            <use href="#cupRim" class="cup-rim" />
+            <path d="M108 92 L101 300" />
+            <path d="M212 96 L219 292" />
+          </g>
+        </svg>
+        <span class="lab-axis lab-axis--x">X</span>
+        <span class="lab-axis lab-axis--y">Y</span>
+        <span class="lab-scale">1 : 1.5 IOR</span>
+      </div>
+
+      <div class="lab-panel">
+        <div class="lab-row">
+          <span class="lab-key">采样次数</span>
+          <div class="seg" id="samples" role="group" aria-label="采样次数">
+            <button type="button" data-v="1">01</button>
+            <button type="button" data-v="3" class="is-active">03</button>
+            <button type="button" data-v="9">09</button>
+          </div>
+        </div>
+        <label class="lab-range">
+          <span class="lab-key">分离强度</span>
+          <input type="range" id="disp" min="0" max="100" value="52" />
+          <output id="dispOut">52</output>
+        </label>
+
+        <dl class="lab-data">
+          <div><dt>IOR · R</dt><dd>1.490</dd></div>
+          <div><dt>IOR · G</dt><dd>1.520</dd></div>
+          <div><dt>IOR · B</dt><dd>1.550</dd></div>
+          <div><dt>色边宽度</dt><dd id="edgeW">1.9 px</dd></div>
+          <div><dt>成本倍数</dt><dd id="costMul">3.0×</dd></div>
+          <div><dt>能量守恒</dt><dd>按 Fresnel 重分配</dd></div>
+        </dl>
+
+        <p class="lab-note">
+          在材质里对 SceneColor 采三次再按通道合成，就能看见色边；代价是采样数线性增长。
+          更工程的做法是一次 RDG pass 完成多次采样 —— 先证明视觉，再证明管线。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="numbers" id="numbers">
+    <div class="num-head">
+      <span class="sec-label">05 / METRICS</span>
+      <h2 data-split>能写进简历的，<br />先得能被复现。</h2>
+    </div>
+    <div class="num-grid">
+      <div class="num" data-reveal>
+        <b data-count="117">0</b><span class="num-unit">个</span>
+        <p>单元测试</p><small>tests/ · 纯 unittest · 58 ms</small>
+      </div>
+      <div class="num" data-reveal>
+        <b data-count="21">0</b><span class="num-unit">个</span>
+        <p>保留脚本</p><small>130 个来路不明 → 21 个可解释</small>
+      </div>
+      <div class="num" data-reveal>
+        <b data-count="56">0</b><span class="num-unit">人日</span>
+        <p>重估工时</p><small>原始 84 人日 · AI 协作后</small>
+      </div>
+      <div class="num" data-reveal>
+        <b data-count="12">0</b><span class="num-unit">周</span>
+        <p>排期</p><small>40–50 h/周 · 含打磨</small>
+      </div>
+      <div class="num" data-reveal>
+        <b data-count="178.0" data-dec="1">0</b><span class="num-unit">MB</span>
+        <p>估算显存</p><small>39 张源图 · BC7 + mip</small>
+      </div>
+      <div class="num" data-reveal>
+        <b data-count="42.7" data-dec="1">0</b><span class="num-unit">%</span>
+        <p>降档后省下</p><small>cap 1024 · B 档 · C 档 71.9%</small>
+      </div>
+    </div>
+    <p class="num-foot">所有数字都能从仓库里的 JSON / md 重跑出来；跑不出来的一律标「待验证」。</p>
+  </section>
+
+  <section class="matrix" id="matrix">
+    <div class="sec-head">
+      <span class="sec-no" data-parallax="0.05">06</span>
+      <div class="sec-title">
+        <span class="sec-label">ROADMAP / 路线图</span>
+        <h2 data-split>七项，<br />一个都没吹。</h2>
+      </div>
+    </div>
+
+    <div class="matrix-wrap">
+      <div class="matrix-list" id="matrixList">
+        <button class="mrow is-done" data-key="infra" type="button">
+          <span class="mr-no">S0</span><span class="mr-name">共享设施 · 确定性内核</span>
+          <span class="mr-days">2 d</span><span class="mr-state">已落地</span>
+        </button>
+        <button class="mrow" data-key="b6" type="button">
+          <span class="mr-no">B6</span><span class="mr-name">视差假体积</span>
+          <span class="mr-days">5 d</span><span class="mr-state">未开始</span>
+        </button>
+        <button class="mrow" data-key="b1" type="button">
+          <span class="mr-no">B1</span><span class="mr-name">厚壁玻璃 + 色散</span>
+          <span class="mr-days">10 d</span><span class="mr-state">未开始</span>
+        </button>
+        <button class="mrow" data-key="b4" type="button">
+          <span class="mr-no">B4</span><span class="mr-name">描边 NPR 三路线</span>
+          <span class="mr-days">11 d</span><span class="mr-state">未开始</span>
+        </button>
+        <button class="mrow" data-key="c1" type="button">
+          <span class="mr-no">C1</span><span class="mr-name">透明成本基准</span>
+          <span class="mr-days">9 d</span><span class="mr-state">未开始</span>
+        </button>
+        <button class="mrow is-partial" data-key="c2" type="button">
+          <span class="mr-no">C2</span><span class="mr-name">角色贴图预算</span>
+          <span class="mr-days">5 d</span><span class="mr-state">第 0 步已出数</span>
+        </button>
+        <button class="mrow" data-key="e3" type="button">
+          <span class="mr-no">E3</span><span class="mr-name">一键体检面板</span>
+          <span class="mr-days">4 d</span><span class="mr-state">未开始</span>
+        </button>
+        <button class="mrow" data-key="a5" type="button">
+          <span class="mr-no">A5</span><span class="mr-name">AI 工作流与审计</span>
+          <span class="mr-days">10 d</span><span class="mr-state">未开始</span>
+        </button>
+      </div>
+
+      <aside class="matrix-detail" id="matrixDetail" aria-live="polite">
+        <div class="md-head">
+          <span id="mdNo">S0</span>
+          <h3 id="mdTitle">共享设施 · 确定性内核</h3>
+          <span class="md-state" id="mdState">已落地</span>
+        </div>
+        <p class="md-pitch" id="mdPitch"></p>
+        <ul class="md-points" id="mdPoints"></ul>
+        <div class="md-foot">
+          <span id="mdDays">2 人日</span>
+          <span id="mdRisk">风险 · 低</span>
+        </div>
+      </aside>
+    </div>
+    <p class="matrix-note">
+      「已落地」只表示不依赖编辑器与显卡的部分已经跑通；任何需要 UE 的结论，都还等着一次真机采集。
+    </p>
+  </section>
+
+  <section class="next" id="next">
+    <div class="next-head">
+      <span class="sec-label">07 / NEXT</span>
+      <h2 data-split>剩下的事，<br />得有人亲手做。</h2>
+      <p>判定层可以离线，采集层不行。这四件事做完，七项才有资格往前推。</p>
+    </div>
+    <ul class="todo" id="todo">
+      <li data-reveal>
+        <label><input type="checkbox" /><i class="box"></i>
+          <span class="todo-no">01</span>
+          <span class="todo-txt"><b>定三个机位</b><small>新建 Content/Lab，近景 / 中景 / 满屏，把「同机位」变成默认习惯。</small></span>
+          <span class="todo-meta">0.5 d</span>
+        </label>
+      </li>
+      <li data-reveal>
+        <label><input type="checkbox" /><i class="box"></i>
+          <span class="todo-no">02</span>
+          <span class="todo-txt"><b>导出 shots.json</b><small>每张对照图的相机位置、fov、画质档与参数快照，跑一次 shot.build_verdict 看灯。</small></span>
+          <span class="todo-meta">1 d</span>
+        </label>
+      </li>
+      <li data-reveal>
+        <label><input type="checkbox" /><i class="box"></i>
+          <span class="todo-no">03</span>
+          <span class="todo-txt"><b>采一次成本</b><small>预热 5 分钟，连续采 5 帧，记温度与频率；退化超过 10% 判红。</small></span>
+          <span class="todo-meta">1 d</span>
+        </label>
+      </li>
+      <li data-reveal>
+        <label><input type="checkbox" /><i class="box"></i>
+          <span class="todo-no">04</span>
+          <span class="todo-txt"><b>给 C2 定阈值</b><small>8 GB 显存里留多少给玻璃与后处理 —— 这个数只能由人来拍。</small></span>
+          <span class="todo-meta">0.5 d</span>
+        </label>
+      </li>
+    </ul>
+    <p class="todo-note" id="todoNote">0 / 4 完成 · 勾选会记在这台设备上</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-mark" aria-hidden="true">
+    <span class="fm-circle"></span>
+    <span class="fm-bar"></span>
+    <span class="fm-cross">+</span>
+  </div>
+  <div class="foot-copy">
+    <p class="foot-big">LIQUID GLASS — BUILD LOG</p>
+    <p>Patch 01 · 2026-10-20 · 全部内容来自 D:/ue5/liquied 的文档与产物</p>
+    <p class="foot-links">
+      <a href="https://github.com/R1dicul3" target="_blank" rel="noopener">GitHub →</a>
+      <span>单文件站点 · 无外部依赖 · 断网可看</span>
+    </p>
+  </div>
+  <div class="foot-end">
+    <span>END OF PATCH</span>
+    <b>↺</b>
+    <small>TRY: ↑ ↑ ↓ ↓ ← → ← → B A</small>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
