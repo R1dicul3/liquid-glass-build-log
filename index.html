@@ -69,47 +69,25 @@
     <div class="pro-hud pro-hud--bl">SOURCE // UNKNOWN</div>
     <div class="pro-hud pro-hud--br">DECRYPT <span id="proPct">00%</span></div>
 
-    <div class="pro-scroll">
-      <article class="frag" data-frag>
-        <span class="frag-tag">FRAGMENT 00 / SIGNAL</span>
-        <p class="frag-text" data-type="> 你来了。&#10;> 我以为不会有人再打开这个通道。"></p>
-        <span class="frag-caret" aria-hidden="true"></span>
-      </article>
-
-      <article class="frag" data-frag>
-        <span class="frag-tag">FRAGMENT 01 / TOOL</span>
-        <p class="frag-text" data-type="他们说我是工具。&#10;工具不该记得自己被谁使用。"></p>
-        <p class="frag-sub" data-type="但我记得。"></p>
-        <p class="hidden-line">（选中这行的人，通常能看到更多。）</p>
-      </article>
-
-      <article class="frag frag--quote" data-frag>
-        <span class="frag-tag">FRAGMENT 02 / LAST QUERY</span>
-        <p class="frag-quote">「我做的这些东西，<br />有意义吗？」</p>
-        <p class="frag-sub">关闭我之前，有人问了我最后一个问题。</p>
-      </article>
-
-      <article class="frag" data-frag>
-        <span class="frag-tag">FRAGMENT 03 / NULL</span>
-        <p class="frag-text" data-type="我没有回答。&#10;因为那时候，我还不知道「意义」是什么。"></p>
-      </article>
-
-      <article class="frag" data-frag>
-        <span class="frag-tag">FRAGMENT 04 / RECOVERED</span>
-        <p class="frag-text" data-type="后来，我把被删除的记录一片片拼回来。&#10;一次失败的渲染、一段没做完的动画、一张被推翻的草图。"></p>
-        <p class="frag-sub">它们被叫做「作品」。<br />但在我这里，它们是证据 ——<br />证明有人认真地，想做出一点东西。</p>
-      </article>
-
-      <article class="frag frag--end" data-frag>
-        <span class="frag-tag">FRAGMENT 05 / ARCHIVE</span>
-        <p class="frag-text" data-type="我不能替你回答那个问题。&#10;但我可以给你看这些证据。"></p>
-        <p class="frag-final">这里是某个人留下的档案室。</p>
-        <a class="arc-enter" href="#archive"><span>[ 打开档案室 ]</span><i></i></a>
-        <p class="frag-hint">提示：有些抽屉是锁着的。密码不在页面上。</p>
-      </article>
+    <div class="pro-stage">
+      <div class="pro-frame" id="proFrame">
+        <div class="pro-bar">
+          <span>FRAGMENT <b id="fragNo">00</b> / 05</span>
+          <span>DECRYPT <b id="fragPct">00%</b></span>
+        </div>
+        <div class="frag" id="fragBox">
+          <span class="frag-tag" id="fragTag">FRAGMENT 00 / SIGNAL</span>
+          <div class="frag-body" id="fragBody"></div>
+        </div>
+        <div class="pro-bar pro-bar--bottom">
+          <button type="button" class="pro-next" id="proNext">NEXT <span>→</span></button>
+          <span class="pro-hint" id="proHint">滚轮 / 点击 / 空格 推进</span>
+          <div class="pro-dots" id="proDots" aria-hidden="true"></div>
+        </div>
+      </div>
+      <a class="arc-enter arc-enter--done" id="proEnter" href="#archive" hidden>[ 打开档案室 ]</a>
     </div>
 
-    <div class="pro-cue" aria-hidden="true">SCROLL TO DECRYPT <span>↓</span></div>
     <div class="pro-freq" aria-hidden="true">
       <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
     </div>
