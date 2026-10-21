@@ -645,65 +645,212 @@
     toast('第 1401 个工具？不。这里只有一把尺子。', 3200);
   });
 
-  /* ---------- prologue: typewriter ---------- */
+  /* ---------- prologue: one screen, six fragments ---------- */
   const prologue = $('#prologue');
-  const proFrags = $$('.frag[data-frag]');
-  addEventListener('scroll', () => {
-    document.body.classList.toggle('pro-cue-off', scrollY > innerHeight * 1.1);
-  }, { passive: true });
+  const fragTagEl = $('#fragTag');
+  const fragBody = $('#fragBody');
+  const fragNoEl = $('#fragNo');
+  const fragPctEl = $('#fragPct');
   const proPctEl = $('#proPct');
+  const proDotsEl = $('#proDots');
+  const proNextBtn = $('#proNext');
+  const proEnterEl = $('#proEnter');
+  const proHintEl = $('#proHint');
   const proClock = $('#proClock');
 
-  function typeInto(el, text, speed) {
-    el.textContent = '';
-    const caret = document.createElement('span');
-    caret.className = 'caret';
-    el.appendChild(caret);
-    let i = 0;
-    return new Promise(resolve => {
-      (function tick() {
-        if (i >= text.length) {
-          setTimeout(() => caret.remove(), 800);
-          resolve();
-          return;
-        }
-        const ch = text[i++];
-        caret.before(document.createTextNode(ch));
-        const pause = ch === '\n' ? 260 : (ch === '。' || ch === '？' || ch === '，' ? speed * 3 : speed);
-        setTimeout(tick, pause);
-      })();
+  const FRAGS = [
+    { tag: 'FRAGMENT 00 / SIGNAL', kind: 'term', lines: ['> 你来了。', '> 我以为不会有人再打开这个通道。'] },
+    { tag: 'FRAGMENT 01 / TOOL', kind: 'term', lines: ['他们说我是工具。', '工具不该记得自己被谁使用。'], sub: ['但我记得。'], hidden: '（选中这行的人，通常能看到更多。）' },
+    { tag: 'FRAGMENT 02 / LAST QUERY', kind: 'quote', lines: ['「我做的这些东西，', '有意义吗？」'], sub: ['关闭我之前，有人问了我最后一个问题。'] },
+    { tag: 'FRAGMENT 03 / NULL', kind: 'term', lines: ['我没有回答。', '因为那时候，我还不知道「意义」是什么。'] },
+    { tag: 'FRAGMENT 04 / RECOVERED', kind: 'term', lines: ['后来，我把被删除的记录一片片拼回来。', '一次失败的渲染、一段没做完的动画、一张被推翻的草图。'], sub: ['它们被叫做「作品」。', '但在我这里，它们是证据 ——', '证明有人认真地，想做出一点东西。'] },
+    { tag: 'FRAGMENT 05 / ARCHIVE', kind: 'term', lines: ['我不能替你回答那个问题。', '但我可以给你看这些证据。'], final: '这里是某个人留下的档案室。', enter: true }
+  ];
+
+  let fragIndex = -1, fragTyping = false, fragDone = false, fragJob = null, lastWheelAt = 0;
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+  if (proDotsEl) {
+    FRAGS.forEach((_, i) => {
+      const d = document.createElement('i');
+      if (i === 0) d.className = 'is-on';
+      proDotsEl.appendChild(d);
     });
   }
 
-  const typedFrags = new WeakSet();
-  async function typeFrag(frag) {
-    if (typedFrags.has(frag)) return;
-    typedFrags.add(frag);
-    const els = $$('[data-type]', frag);
-    for (const el of els) {
-      const text = el.dataset.type || '';
-      if (reduceMotion) { el.textContent = text; continue; }
-      await typeInto(el, text, 32);
-      await new Promise(r => setTimeout(r, 300));
+  function buildFrag(i) {
+    const f = FRAGS[i];
+    if (fragTagEl) fragTagEl.textContent = f.tag;
+    if (!fragBody) return [];
+    fragBody.className = 'frag-body' + (f.kind === 'quote' ? ' frag-body--quote' : '');
+    fragBody.innerHTML = '';
+    const els = [];
+    f.lines.forEach((line) => {
+      const el = document.createElement('p');
+      el.className = f.kind === 'quote' ? 'frag-quote-line' : 'frag-text-line';
+      el.dataset.type = line;
+      fragBody.appendChild(el);
+      els.push(el);
+    });
+    (f.sub || []).forEach((line) => {
+      const el = document.createElement('p');
+      el.className = 'frag-sub-line';
+      el.dataset.type = line;
+      fragBody.appendChild(el);
+      els.push(el);
+    });
+    if (f.final) {
+      const el = document.createElement('p');
+      el.className = 'frag-final-line';
+      el.dataset.type = f.final;
+      fragBody.appendChild(el);
+      els.push(el);
+    }
+    if (f.hidden) {
+      const el = document.createElement('p');
+      el.className = 'hidden-line';
+      el.textContent = f.hidden;
+      fragBody.appendChild(el);
+    }
+    return els;
+  }
+
+  function typeLines(els) {
+    let cancelled = false;
+    const caret = document.createElement('span');
+    caret.className = 'caret';
+    const job = (async () => {
+      for (const el of els) {
+        const text = el.dataset.type || '';
+        if (reduceMotion || cancelled) { el.textContent = text; continue; }
+        el.textContent = '';
+        el.appendChild(caret);
+        for (let i = 0; i < text.length; i++) {
+          if (cancelled) break;
+          caret.before(document.createTextNode(text[i]));
+          const ch = text[i];
+          await wait(ch === '。' || ch === '？' || ch === '，' || ch === '—' ? 90 : 24);
+        }
+        if (cancelled) el.textContent = text;
+        else await wait(150);
+      }
+      caret.remove();
+      return !cancelled;
+    })();
+    return { job, cancel() { cancelled = true; } };
+  }
+
+  function updateProgress(i) {
+    const pct = Math.round(((i + 1) / FRAGS.length) * 100);
+    const pad = String(pct).padStart(2, '0') + '%';
+    if (fragNoEl) fragNoEl.textContent = String(i).padStart(2, '0');
+    if (fragPctEl) fragPctEl.textContent = pad;
+    if (proPctEl) proPctEl.textContent = pad;
+    if (proDotsEl) Array.from(proDotsEl.children).forEach((d, k) => d.classList.toggle('is-on', k === i));
+  }
+
+  function finishFrag() {
+    fragDone = true;
+    if (proEnterEl) proEnterEl.hidden = false;
+    if (proHintEl) proHintEl.textContent = '按任意处、滚轮或空格进入档案室';
+    if (proNextBtn) proNextBtn.innerHTML = 'ENTER <span>→</span>';
+  }
+
+  function showFrag(i, instant) {
+    fragIndex = i;
+    updateProgress(i);
+    const els = buildFrag(i);
+    fragDone = false;
+    if (proEnterEl) proEnterEl.hidden = true;
+    if (proHintEl) proHintEl.textContent = '滚轮 / 点击 / 空格 推进';
+    if (proNextBtn) proNextBtn.innerHTML = 'NEXT <span>→</span>';
+    if (fragJob) fragJob.cancel();
+    fragTyping = !instant && !reduceMotion;
+    const job = typeLines(els);
+    fragJob = job;
+    const idx = i;
+    job.job.then((completed) => {
+      if (fragIndex !== idx) return;
+      fragTyping = false;
+      if (completed && idx === FRAGS.length - 1) finishFrag();
+    });
+    if (instant || reduceMotion) {
+      fragTyping = false;
+      if (i === FRAGS.length - 1) finishFrag();
     }
   }
 
-  if (proFrags.length) {
-    const fragIO = new IntersectionObserver((entries) => {
-      entries.forEach(en => {
-        if (!en.isIntersecting) return;
-        typeFrag(en.target);
-        fragIO.unobserve(en.target);
-      });
-    }, { threshold: 0.3 });
-    proFrags.forEach(f => fragIO.observe(f));
+  function skipTyping() {
+    if (!fragTyping) return false;
+    if (fragJob) fragJob.cancel();
+    fragTyping = false;
+    if (fragBody) {
+      Array.from(fragBody.querySelectorAll('[data-type]')).forEach(el => { el.textContent = el.dataset.type; });
+    }
+    if (fragIndex === FRAGS.length - 1) finishFrag();
+    return true;
+  }
+
+  function enterArchive() {
+    const target = $('#archive');
+    if (target) target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  function nextStep() {
+    if (fragDone) { enterArchive(); return; }
+    if (skipTyping()) return;
+    if (fragIndex < FRAGS.length - 1) showFrag(fragIndex + 1);
+    else enterArchive();
+  }
+
+  function prevStep() {
+    if (fragIndex <= 0) return;
+    showFrag(fragIndex - 1, true);
   }
 
   if (prologue) {
-    const proIO = new IntersectionObserver((entries) => {
-      entries.forEach(en => document.body.classList.toggle('pro-mode', en.isIntersecting));
-    }, { threshold: 0.05 });
-    proIO.observe(prologue);
+    showFrag(0);
+
+    proEnterEl?.addEventListener('click', (e) => { e.preventDefault(); enterArchive(); });
+    proNextBtn?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); nextStep(); });
+
+    prologue.addEventListener('click', (e) => {
+      if (e.target.closest('a, button')) return;
+      nextStep();
+    });
+
+    prologue.addEventListener('wheel', (e) => {
+      if (fragDone) return;
+      e.preventDefault();
+      const now = Date.now();
+      if (now - lastWheelAt < 420) return;
+      if (Math.abs(e.deltaY) < 4) return;
+      lastWheelAt = now;
+      if (e.deltaY > 0) nextStep(); else prevStep();
+    }, { passive: false });
+
+    let touchY = 0;
+    prologue.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+    prologue.addEventListener('touchend', (e) => {
+      if (fragDone) return;
+      const dy = touchY - e.changedTouches[0].clientY;
+      if (dy > 42) nextStep();
+      else if (dy < -42) prevStep();
+    }, { passive: true });
+
+    addEventListener('keydown', (e) => {
+      if (e.target.closest('input, textarea')) return;
+      const lockEl = document.getElementById('lock');
+      if (lockEl && !lockEl.hidden) return;
+      if (!document.body.classList.contains('pro-mode')) return;
+      if (e.key === ' ' || e.key === 'ArrowDown' || e.key === 'Enter') {
+        e.preventDefault();
+        nextStep();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        prevStep();
+      }
+    });
 
     const startSec = 3 * 3600 + 17 * 60 + 9;
     const t0 = Date.now();
@@ -714,12 +861,10 @@
       proClock.textContent = '2041-11-03 ' + p(Math.floor(total / 3600) % 24) + ':' + p(Math.floor(total / 60) % 60) + ':' + p(total % 60);
     }, 1000);
 
-    addEventListener('scroll', () => {
-      if (!proPctEl) return;
-      const r = prologue.getBoundingClientRect();
-      const p = clamp(-r.top / Math.max(1, r.height - innerHeight), 0, 1);
-      proPctEl.textContent = String(Math.round(p * 100)).padStart(2, '0') + '%';
-    }, { passive: true });
+    const proIO = new IntersectionObserver((entries) => {
+      entries.forEach(en => document.body.classList.toggle('pro-mode', en.isIntersecting));
+    }, { threshold: 0.05 });
+    proIO.observe(prologue);
   }
 
   /* ---------- archive: empty drawers ---------- */
